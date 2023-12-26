@@ -41,6 +41,8 @@ class paginationView extends view{
     }
 
     _getMarkup(){
+        const curPage = this._data.page
+
         const numPages = Math.ceil(this._data.results.length / this._data.resultPerPage)
 
 
