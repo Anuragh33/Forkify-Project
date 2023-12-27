@@ -56,8 +56,18 @@ const searchRecipe = async function(){
    }
 
 
+  const updateServings = (newServings)=> {
+     model.updateServings(newServings)
+
+     recipeView.render(model.state.recipe)
+
+   }
+
+
+
 const init = function(){
   recipeView.getHandler(controlRecipe)
+  recipeView.getHandlerUpdateServing(updateServings)
   searchView.getHandlerSearch(searchRecipe)
   paginationView._addHandlerClick(controlPagination)
 }

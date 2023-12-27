@@ -618,8 +618,13 @@ const controlPagination = function(goToPage) {
     (0, _resultsViewJsDefault.default).render(_modelJs.searchResult(goToPage));
     (0, _paginationViewJsDefault.default).render(_modelJs.state.search);
 };
+const updateServings = (newServings)=>{
+    _modelJs.updateServings(newServings);
+    (0, _recipeViewJsDefault.default).render(_modelJs.state.recipe);
+};
 const init = function() {
     (0, _recipeViewJsDefault.default).getHandler(controlRecipe);
+    (0, _recipeViewJsDefault.default).getHandlerUpdateServing(updateServings);
     (0, _searchViewJsDefault.default).getHandlerSearch(searchRecipe);
     (0, _paginationViewJsDefault.default)._addHandlerClick(controlPagination);
 };
@@ -1876,6 +1881,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "state", ()=>state);
 parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
 parcelHelpers.export(exports, "loadSearchRecipe", ()=>loadSearchRecipe);
+parcelHelpers.export(exports, "updateServings", ()=>updateServings);
 parcelHelpers.export(exports, "searchResult", ()=>searchResult);
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
@@ -1926,6 +1932,12 @@ const loadSearchRecipe = async function(query) {
         console.log(err);
         throw err;
     }
+};
+const updateServings = (newServings)=>{
+    state.recipe.ingredients.forEach((ing)=>{
+        ing.quantity = ing.quantity * newServings / state.recipe.servings;
+    });
+    state.recipe.servings = newServings;
 };
 const searchResult = function(page = state.search.page) {
     state.search.page = page;
@@ -2597,6 +2609,23 @@ var _viewJs = require("./view.js");
 var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
 class recipeView extends (0, _viewJsDefault.default) {
     _parentElement = document.querySelector(".recipe");
+    getHandler(handler) {
+        [
+            "hashchange",
+            "load"
+        ].forEach((ev)=>{
+            window.addEventListener(ev, handler);
+        });
+    }
+    getHandlerUpdateServing(handler) {
+        this._parentElement.addEventListener("click", function(e) {
+            const btn = e.target.closest(".btn--tiny");
+            //console.log(btn)
+            if (!btn) return;
+            const updateTo = +btn.dataset.updateTo;
+            if (updateTo > 0) handler(updateTo);
+        });
+    }
     _getMarkup() {
         return `
     <figure class="recipe__fig">
@@ -2622,12 +2651,12 @@ class recipeView extends (0, _viewJsDefault.default) {
             <span class="recipe__info-text">servings</span>
 
             <div class="recipe__info-buttons">
-              <button class="btn--tiny btn--increase-servings">
+              <button class="btn--tiny btn--update-servings" data-update-to= ${this._data.servings - 1}>
                 <svg>
                   <use href="${0, _iconsSvgDefault.default}#icon-minus-circle"></use>
                 </svg>
               </button>
-              <button class="btn--tiny btn--increase-servings">
+              <button class="btn--tiny btn--update-servings" data-update-to= ${this._data.servings + 1}>
                 <svg>
                   <use href="${0, _iconsSvgDefault.default}#icon-plus-circle"></use>
                 </svg>
@@ -2685,14 +2714,6 @@ class recipeView extends (0, _viewJsDefault.default) {
         ${ing.description}
       </div>
     </li>`;
-    }
-    getHandler(handler) {
-        [
-            "hashchange",
-            "load"
-        ].forEach((ev)=>{
-            window.addEventListener(ev, handler);
-        });
     }
 }
 exports.default = new recipeView();
@@ -3128,7 +3149,7 @@ class paginationView extends (0, _viewJsDefault.default) {
     _getMarkup() {
         const curPage = this._data.page;
         const numPages = Math.ceil(this._data.results.length / this._data.resultPerPage);
-        const curPage = this._data.page;
+        // const curPage = this._data.page;
         if (curPage === 1 && numPages > 1) return this._pageNext(curPage + 1);
         if (curPage === numPages && numPages > 1) return this._pagePrev(curPage - 1);
         if (curPage < numPages) return `
