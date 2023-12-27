@@ -32,12 +32,7 @@ renderSpinner() {
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   };
 
-getHandler(handler){
-    ['hashchange', 'load'].forEach(ev=> {
-        window.addEventListener(ev, handler);
-      })
 
-}
 
 getErrorMessage(message = this._message){
 const markup =
