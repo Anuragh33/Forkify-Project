@@ -9,9 +9,7 @@ _parentElement = document.querySelector('.recipe');
 _getMarkup() {
 return`
     <figure class="recipe__fig">
-          <img src="${this._data.image}" alt="${
-      this._data.title
-    }" class="recipe__img" />
+          <img src="${this._data.image}" alt="${this._data.title}" class="recipe__img" />
           <h1 class="recipe__title">
             <span>${this._data.title}</span>
           </h1>
@@ -107,11 +105,18 @@ _getIngredient(ing){
       </div>
     </li>`;
       }
-      
+
+      getHandler(handler){
+        ['hashchange', 'load'].forEach(ev=> {
+            window.addEventListener(ev, handler);
+          })
     
-    
+    }
+
 
 
 }
+
+
 
 export default new recipeView();

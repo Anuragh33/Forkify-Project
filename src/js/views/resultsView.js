@@ -8,13 +8,13 @@ class resultsView extends view{
     _message = 'No results found based on your search. Please try again. Thanks!!'
 
 
-    _getMarkup(){
+    _getMarkup() {
         return this._data.map(this._getMarkupPreview).join('')
      
     }
 
 
-    _getMarkupPreview(results){
+    _getMarkupPreview(results) {
         return `
         <li class="preview">
         <a class="preview__link " href="#${results.id}">

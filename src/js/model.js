@@ -39,7 +39,7 @@ export const loadSearchRecipe = async function (query){
 
     state.search.query = query;
     const data = await getJSON(`${URL}?search=${query}`);
-    console.log(data)
+    //console.log(data)
 
     state.search.results = data.data.recipes.map(res => {
       return {
@@ -50,7 +50,7 @@ export const loadSearchRecipe = async function (query){
       };
     }
       )
-      console.log(state.search.results)
+      //console.log(state.search.results)
 
   }catch(err){
     console.log(err)
@@ -59,12 +59,12 @@ export const loadSearchRecipe = async function (query){
 }
 
 
-export const resultPerPage = function(page = state.search.page){
+export const searchResult = function(page = state.search.page){
 
-state.search.page = page
-const start = (page - 1 ) * state.search.resultPerPage
-const end = 1 * state.search.resultPerPage
+    state.search.page = page
+    const start = (page -1) * state.search.resultPerPage
+    const end = page * state.search.resultPerPage
 
-return state.search.results.slice(start, end)
+    return state.search.results.slice(start, end)
 
 }

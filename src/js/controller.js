@@ -39,7 +39,7 @@ const searchRecipe = async function(){
 
     await model.loadSearchRecipe(query)
 
-    resultsView.render(model.resultPerPage()) 
+    resultsView.render(model.searchResult()) 
  
     paginationView.render(model.state.search)
   }
@@ -50,7 +50,7 @@ const searchRecipe = async function(){
 
   const controlPagination = function(goToPage){
 
-    resultsView.render(model.resultPerPage(goToPage)) 
+    resultsView.render(model.searchResult(goToPage)) 
 
     paginationView.render(model.state.search) 
    }
@@ -62,4 +62,3 @@ const init = function(){
   paginationView._addHandlerClick(controlPagination)
 }
  init();
-

@@ -7,15 +7,16 @@ _data;
 render(data) {
     if(!data || (Array.isArray(data) && data.length === 0))
      return this.getErrorMessage();
-    
+
     this._data=data;
     const markup =this._getMarkup();
+    // if(!render) return markup;
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
 }
 
 
-_clear(){
+_clear() {
     this._parentElement.innerHTML = '';
 }
 
@@ -34,20 +35,19 @@ renderSpinner() {
 
 
 
-getErrorMessage(message = this._message){
-const markup =
-        `<div class="error">
-        <div>
-          <svg>
-            <use href="${icons}#icon-alert-triangle"></use>
-          </svg>
-        </div>
-        <p>${message}</p>
-        </div>`
-
-
-this._clear();
-this._parentElement.insertAdjacentHTML('afterbegin', markup);
+getErrorMessage(message = this._message) {
+    const markup =
+            `<div class="error">
+            <div>
+              <svg>
+                <use href="${icons}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+            </div>`
+            
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
 }
 
     

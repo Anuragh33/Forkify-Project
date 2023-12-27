@@ -608,14 +608,14 @@ const searchRecipe = async function() {
         const query = (0, _searchViewJsDefault.default).getSearchValue();
         if (!query) return;
         await _modelJs.loadSearchRecipe(query);
-        (0, _resultsViewJsDefault.default).render(_modelJs.resultPerPage());
+        (0, _resultsViewJsDefault.default).render(_modelJs.searchResult());
         (0, _paginationViewJsDefault.default).render(_modelJs.state.search);
     } catch (err) {
         console.log(err);
     }
 };
 const controlPagination = function(goToPage) {
-    (0, _resultsViewJsDefault.default).render(_modelJs.resultPerPage(goToPage));
+    (0, _resultsViewJsDefault.default).render(_modelJs.searchResult(goToPage));
     (0, _paginationViewJsDefault.default).render(_modelJs.state.search);
 };
 const init = function() {
@@ -1876,7 +1876,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "state", ()=>state);
 parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
 parcelHelpers.export(exports, "loadSearchRecipe", ()=>loadSearchRecipe);
-parcelHelpers.export(exports, "resultPerPage", ()=>resultPerPage);
+parcelHelpers.export(exports, "searchResult", ()=>searchResult);
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
 var _helperJs = require("./helper.js");
@@ -1912,7 +1912,7 @@ const loadSearchRecipe = async function(query) {
     try {
         state.search.query = query;
         const data = await (0, _helperJs.getJSON)(`${(0, _configJs.URL)}?search=${query}`);
-        console.log(data);
+        //console.log(data)
         state.search.results = data.data.recipes.map((res)=>{
             return {
                 id: res.id,
@@ -1921,16 +1921,16 @@ const loadSearchRecipe = async function(query) {
                 image: res.image_url
             };
         });
-        console.log(state.search.results);
+    //console.log(state.search.results)
     } catch (err) {
         console.log(err);
         throw err;
     }
 };
-const resultPerPage = function(page = state.search.page) {
+const searchResult = function(page = state.search.page) {
     state.search.page = page;
     const start = (page - 1) * state.search.resultPerPage;
-    const end = 1 * state.search.resultPerPage;
+    const end = page * state.search.resultPerPage;
     return state.search.results.slice(start, end);
 };
 
@@ -2686,6 +2686,14 @@ class recipeView extends (0, _viewJsDefault.default) {
       </div>
     </li>`;
     }
+    getHandler(handler) {
+        [
+            "hashchange",
+            "load"
+        ].forEach((ev)=>{
+            window.addEventListener(ev, handler);
+        });
+    }
 }
 exports.default = new recipeView();
 
@@ -2991,6 +2999,7 @@ class view {
         if (!data || Array.isArray(data) && data.length === 0) return this.getErrorMessage();
         this._data = data;
         const markup = this._getMarkup();
+        // if(!render) return markup;
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", markup);
     }
@@ -3008,23 +3017,15 @@ class view {
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", markup);
     }
-    getHandler(handler) {
-        [
-            "hashchange",
-            "load"
-        ].forEach((ev)=>{
-            window.addEventListener(ev, handler);
-        });
-    }
     getErrorMessage(message = this._message) {
         const markup = `<div class="error">
-        <div>
-          <svg>
-            <use href="${(0, _iconsSvgDefault.default)}#icon-alert-triangle"></use>
-          </svg>
-        </div>
-        <p>${message}</p>
-        </div>`;
+            <div>
+              <svg>
+                <use href="${(0, _iconsSvgDefault.default)}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+            </div>`;
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", markup);
     }

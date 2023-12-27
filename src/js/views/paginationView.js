@@ -47,18 +47,18 @@ class paginationView extends view{
 
 
         if(curPage === 1 && numPages > 1)
-        return this._pageNext(curPage+1)
+        return this._pageNext(curPage+1);
         
         if(curPage === numPages && numPages > 1)
-        return this._pagePrev(curPage-1)
+        return this._pagePrev(curPage-1);
 
         if(curPage < numPages)
         return `
         ${this._pageNext(curPage+1)}
         ${this._pagePrev(curPage-1)}
-        `
+        `;
             
-        return ''
+        return '';
     }
 
 }
