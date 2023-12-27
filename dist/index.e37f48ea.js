@@ -3024,6 +3024,14 @@ class view {
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", markup);
     }
+    update(data) {
+        if (!data || Array.isArray(data) && data.length === 0) return this.getErrorMessage();
+        this._data = data;
+        const newMarkup = this._getMarkup();
+        const newDOM = document.createRange().createContextualFragment(newMarkup);
+        const newElements = newDOM.querySelectorAll("*");
+        console.log(newElements);
+    }
     _clear() {
         this._parentElement.innerHTML = "";
     }
