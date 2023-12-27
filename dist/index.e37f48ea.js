@@ -3128,6 +3128,7 @@ class paginationView extends (0, _viewJsDefault.default) {
     _getMarkup() {
         const curPage = this._data.page;
         const numPages = Math.ceil(this._data.results.length / this._data.resultPerPage);
+        const curPage = this._data.page;
         if (curPage === 1 && numPages > 1) return this._pageNext(curPage + 1);
         if (curPage === numPages && numPages > 1) return this._pagePrev(curPage - 1);
         if (curPage < numPages) return `
