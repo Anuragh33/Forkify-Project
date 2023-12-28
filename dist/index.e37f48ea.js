@@ -2641,7 +2641,7 @@ class recipeView extends (0, _viewJsDefault.default) {
     }
     getHandlerBookmark(handler) {
         this._parentElement.addEventListener("click", function(e) {
-            const btn = e.target.closest(".btn-bookmark");
+            const btn = e.target.closest(".btn--bookmark");
             if (!btn) return;
             handler();
         });
