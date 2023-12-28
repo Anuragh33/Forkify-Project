@@ -20,6 +20,8 @@ const controlRecipe = async function() {
 
     if(!id) return
     recipeView.renderSpinner();
+
+    resultsView.update(model.searchResult())
      
     await model.loadRecipe(id)
     recipeView.render(model.state.recipe)
@@ -59,15 +61,21 @@ const searchRecipe = async function(){
   const updateServings = (newServings)=> {
      model.updateServings(newServings)
 
-     recipeView.render(model.state.recipe)
+     recipeView.update(model.state.recipe)
 
    }
+
+const controlSetBookmark = function (){
+  model.setBookmark(model.state.recipe)
+  recipeView.update(model.state.recipe)
+}
 
 
 
 const init = function(){
   recipeView.getHandler(controlRecipe)
   recipeView.getHandlerUpdateServing(updateServings)
+  recipeView.getHandlerBookmark(controlSetBookmark)
   searchView.getHandlerSearch(searchRecipe)
   paginationView._addHandlerClick(controlPagination)
 }

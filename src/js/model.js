@@ -10,6 +10,7 @@ export const state = {
       page: 1,
       resultPerPage: RES_PER_PAGE,
     },
+    bookmark : []
 };
 
 export const loadRecipe = async function(id){
@@ -51,7 +52,7 @@ export const loadSearchRecipe = async function (query){
     }
       )
       //console.log(state.search.results)
-
+state.search.page = 1
   }catch(err){
     console.log(err)
     throw  err
@@ -77,3 +78,12 @@ export const searchResult = function(page = state.search.page){
     return state.search.results.slice(start, end)
 
 }
+
+
+export const setBookmark = function(recipe){
+state.bookmark.push(recipe)
+
+if( recipe.id === state.recipe.id ) state.recipe.bookmarked = true
+
+}
+

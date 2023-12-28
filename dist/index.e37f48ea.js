@@ -596,6 +596,7 @@ const controlRecipe = async function() {
         const id = window.location.hash.slice(1);
         if (!id) return;
         (0, _recipeViewJsDefault.default).renderSpinner();
+        (0, _resultsViewJsDefault.default).update(_modelJs.searchResult());
         await _modelJs.loadRecipe(id);
         (0, _recipeViewJsDefault.default).render(_modelJs.state.recipe);
     } catch (err) {
@@ -620,11 +621,16 @@ const controlPagination = function(goToPage) {
 };
 const updateServings = (newServings)=>{
     _modelJs.updateServings(newServings);
-    (0, _recipeViewJsDefault.default).render(_modelJs.state.recipe);
+    (0, _recipeViewJsDefault.default).update(_modelJs.state.recipe);
+};
+const controlSetBookmark = function() {
+    _modelJs.setBookmark(_modelJs.state.recipe);
+    (0, _recipeViewJsDefault.default).update(_modelJs.state.recipe);
 };
 const init = function() {
     (0, _recipeViewJsDefault.default).getHandler(controlRecipe);
     (0, _recipeViewJsDefault.default).getHandlerUpdateServing(updateServings);
+    (0, _recipeViewJsDefault.default).getHandlerBookmark(controlSetBookmark);
     (0, _searchViewJsDefault.default).getHandlerSearch(searchRecipe);
     (0, _paginationViewJsDefault.default)._addHandlerClick(controlPagination);
 };
@@ -1883,6 +1889,7 @@ parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
 parcelHelpers.export(exports, "loadSearchRecipe", ()=>loadSearchRecipe);
 parcelHelpers.export(exports, "updateServings", ()=>updateServings);
 parcelHelpers.export(exports, "searchResult", ()=>searchResult);
+parcelHelpers.export(exports, "setBookmark", ()=>setBookmark);
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
 var _helperJs = require("./helper.js");
@@ -1893,7 +1900,8 @@ const state = {
         results: [],
         page: 1,
         resultPerPage: (0, _configJs.RES_PER_PAGE)
-    }
+    },
+    bookmark: []
 };
 const loadRecipe = async function(id) {
     try {
@@ -1927,7 +1935,8 @@ const loadSearchRecipe = async function(query) {
                 image: res.image_url
             };
         });
-    //console.log(state.search.results)
+        //console.log(state.search.results)
+        state.search.page = 1;
     } catch (err) {
         console.log(err);
         throw err;
@@ -1944,6 +1953,10 @@ const searchResult = function(page = state.search.page) {
     const start = (page - 1) * state.search.resultPerPage;
     const end = page * state.search.resultPerPage;
     return state.search.results.slice(start, end);
+};
+const setBookmark = function(recipe) {
+    state.bookmark.push(recipe);
+    if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
 };
 
 },{"regenerator-runtime":"dXNgZ","./config.js":"k5Hzs","./helper.js":"lVRAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dXNgZ":[function(require,module,exports) {
@@ -2626,6 +2639,13 @@ class recipeView extends (0, _viewJsDefault.default) {
             if (updateTo > 0) handler(updateTo);
         });
     }
+    getHandlerBookmark(handler) {
+        this._parentElement.addEventListener("click", function(e) {
+            const btn = e.target.closest(".btn-bookmark");
+            if (!btn) return;
+            handler();
+        });
+    }
     _getMarkup() {
         return `
     <figure class="recipe__fig">
@@ -2667,9 +2687,9 @@ class recipeView extends (0, _viewJsDefault.default) {
           <div class="recipe__user-generated">
             
           </div>
-          <button class="btn--round">
+          <button class="btn--round btn--bookmark">
             <svg class="">
-              <use href="${0, _iconsSvgDefault.default}#icon-bookmark-fill"></use>
+              <use href="${0, _iconsSvgDefault.default}#icon-bookmark${this._data.bookmarked ? "-fill" : ""}"></use>
             </svg>
           </button>
         </div>
@@ -3020,17 +3040,23 @@ class view {
         if (!data || Array.isArray(data) && data.length === 0) return this.getErrorMessage();
         this._data = data;
         const markup = this._getMarkup();
-        // if(!render) return markup;
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", markup);
     }
     update(data) {
-        if (!data || Array.isArray(data) && data.length === 0) return this.getErrorMessage();
         this._data = data;
         const newMarkup = this._getMarkup();
         const newDOM = document.createRange().createContextualFragment(newMarkup);
-        const newElements = newDOM.querySelectorAll("*");
+        const newElements = Array.from(newDOM.querySelectorAll("*"));
+        const curElements = Array.from(this._parentElement.querySelectorAll("*"));
+        console.log(curElements);
         console.log(newElements);
+        newElements.forEach((newEl, i)=>{
+            const curEl = curElements[i];
+            console.log(curEl, newEl.isEqualNode(curEl));
+            if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== "") curEl.textContent = newEl.textContent;
+            if (!newEl.isEqualNode(curEl)) Array.from(newEl.attributes).forEach((attr)=>curEl.setAttribute(attr.name, attr.value));
+        });
     }
     _clear() {
         this._parentElement.innerHTML = "";
@@ -3097,9 +3123,10 @@ class resultsView extends (0, _viewJsDefault.default) {
         return this._data.map(this._getMarkupPreview).join("");
     }
     _getMarkupPreview(results) {
+        const id = window.location.hash.slice(1);
         return `
         <li class="preview">
-        <a class="preview__link " href="#${results.id}">
+        <a class="preview__link ${results.id === id ? "preview__link--active" : ""}"href="#${results.id}">
         <figure class="preview__fig">
             <img src="${results.image}" alt="Test" />
         </figure>
