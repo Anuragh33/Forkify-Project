@@ -45,12 +45,12 @@ const searchRecipe = async function(){
  
     paginationView.render(model.state.search)
   }
-  catch(err){
+  catch(err){s
     console.log(err)
   }
   }
 
-  const controlPagination = function(goToPage){
+const controlPagination = function(goToPage){
 
     resultsView.render(model.searchResult(goToPage)) 
 
@@ -58,14 +58,13 @@ const searchRecipe = async function(){
    }
 
 
-  const updateServings = (newServings)=> {
+const updateServings = (newServings)=> {
      model.updateServings(newServings)
-
      recipeView.update(model.state.recipe)
 
    }
 
-const controlSetBookmark = function (){
+   const controlSetBookmark = function (){
   model.setBookmark(model.state.recipe)
   recipeView.update(model.state.recipe)
 }

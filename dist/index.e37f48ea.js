@@ -612,6 +612,7 @@ const searchRecipe = async function() {
         (0, _resultsViewJsDefault.default).render(_modelJs.searchResult());
         (0, _paginationViewJsDefault.default).render(_modelJs.state.search);
     } catch (err) {
+        s;
         console.log(err);
     }
 };
@@ -1917,6 +1918,8 @@ const loadRecipe = async function(id) {
             cookingTime: recipe.cooking_time,
             ingredients: recipe.ingredients
         };
+        if (state.bookmark.some((bookmark)=>bookmark.id === id)) state.recipe.bookmark = true;
+        else state.recipe.bookmark = false;
     } catch (err) {
         console, log(err);
         throw err;
