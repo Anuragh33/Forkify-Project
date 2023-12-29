@@ -29,10 +29,10 @@ export const loadRecipe = async function (id) {
       ingredients: recipe.ingredients
     }
     if (state.bookmark.some(bookmark => bookmark.id === id))
-      state.recipe.bookmark = true
-    else state.recipe.bookmark = false
+      state.recipe.bookmarked = true
+    else state.recipe.bookmarked = false
   } catch (err) {
-    console, log(err)
+    console.log(err)
     throw err
   }
 }
@@ -79,4 +79,11 @@ export const setBookmark = function (recipe) {
   state.bookmark.push(recipe)
 
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true
+}
+
+export const deleteBookmark = function (id) {
+  const index = state.bookmark.findIndex(el => el.id === id)
+  state.bookmark.splice(index, 1)
+
+  if (id === state.recipe.id) state.recipe.bookmarked = false
 }
