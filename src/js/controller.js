@@ -21,6 +21,7 @@ const controlRecipe = async function () {
     recipeView.renderSpinner()
 
     resultsView.update(model.searchResult())
+    bookmarksView.update(model.state.bookmark)
 
     await model.loadRecipe(id)
     recipeView.render(model.state.recipe)
@@ -42,7 +43,6 @@ const searchRecipe = async function () {
 
     paginationView.render(model.state.search)
   } catch (err) {
-    s
     console.log(err)
   }
 }
