@@ -1,24 +1,21 @@
 import view from './view.js'
-import icons from 'url:../../img/icons.svg';
+import icons from 'url:../../img/icons.svg'
 
+class resultsView extends view {
+  _parentElement = document.querySelector('.results')
+  _message = 'No results found based on your search. Please try again. Thanks!!'
 
-class resultsView extends view{
+  _getMarkup () {
+    return this._data.map(this._getMarkupPreview).join('')
+  }
 
-    _parentElement = document.querySelector('.results')
-    _message = 'No results found based on your search. Please try again. Thanks!!'
-
-
-    _getMarkup() {
-        return this._data.map(this._getMarkupPreview).join('')
-     
-    }
-
-
-    _getMarkupPreview(results) {
-        const id = window.location.hash.slice(1)
-        return `
+  _getMarkupPreview (results) {
+    const id = window.location.hash.slice(1)
+    return `
         <li class="preview">
-        <a class="preview__link ${results.id === id ? "preview__link--active": '' }"href="#${results.id}">
+        <a class="preview__link ${
+          results.id === id ? 'preview__link--active' : ''
+        }"href="#${results.id}">
         <figure class="preview__fig">
             <img src="${results.image}" alt="Test" />
         </figure>
@@ -31,8 +28,7 @@ class resultsView extends view{
         </a>
     </li>
 `
-    }
+  }
 }
-
 
 export default new resultsView()
