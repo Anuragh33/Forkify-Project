@@ -75,10 +75,16 @@ export const searchResult = function (page = state.search.page) {
   return state.search.results.slice(start, end)
 }
 
+const persistentBokkmark = function () {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmark))
+}
+
 export const setBookmark = function (recipe) {
   state.bookmark.push(recipe)
 
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true
+
+  persistentBokkmark()
 }
 
 export const deleteBookmark = function (id) {
@@ -86,4 +92,17 @@ export const deleteBookmark = function (id) {
   state.bookmark.splice(index, 1)
 
   if (id === state.recipe.id) state.recipe.bookmarked = false
+
+  persistentBokkmark()
 }
+
+const clearBookmarks = function () {
+  localStorage.clear('bookmark$')
+}
+//clearBookmarks()
+
+const init = function () {
+  const storage = localStorage.getItem('bookmarks')
+  if (storage) state.bookmark = JSON.parse(storage)
+}
+init()

@@ -632,7 +632,11 @@ const controlSetBookmark = function() {
     (0, _recipeViewJsDefault.default).update(_modelJs.state.recipe);
     (0, _bookmarksViewJsDefault.default).render(_modelJs.state.bookmark);
 };
+const controlBookmarks = function() {
+    (0, _bookmarksViewJsDefault.default).render(_modelJs.state.bookmark);
+};
 const init = function() {
+    (0, _bookmarksViewJsDefault.default).getHandler(controlBookmarks);
     (0, _recipeViewJsDefault.default).getHandler(controlRecipe);
     (0, _recipeViewJsDefault.default).getHandlerUpdateServing(updateServings);
     (0, _recipeViewJsDefault.default).getHandlerBookmark(controlSetBookmark);
@@ -1962,15 +1966,29 @@ const searchResult = function(page = state.search.page) {
     const end = page * state.search.resultPerPage;
     return state.search.results.slice(start, end);
 };
+const persistentBokkmark = function() {
+    localStorage.setItem("bookmarks", JSON.stringify(state.bookmark));
+};
 const setBookmark = function(recipe) {
     state.bookmark.push(recipe);
     if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+    persistentBokkmark();
 };
 const deleteBookmark = function(id) {
     const index = state.bookmark.findIndex((el)=>el.id === id);
     state.bookmark.splice(index, 1);
     if (id === state.recipe.id) state.recipe.bookmarked = false;
+    persistentBokkmark();
 };
+const clearBookmarks = function() {
+    localStorage.clear("bookmark$");
+};
+//clearBookmarks()
+const init = function() {
+    const storage = localStorage.getItem("bookmarks");
+    if (storage) state.bookmark = JSON.parse(storage);
+};
+init();
 
 },{"regenerator-runtime":"dXNgZ","./config.js":"k5Hzs","./helper.js":"lVRAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dXNgZ":[function(require,module,exports) {
 /**
@@ -3183,6 +3201,9 @@ var _previewViewJsDefault = parcelHelpers.interopDefault(_previewViewJs);
 class bookmarksView extends (0, _viewJsDefault.default) {
     _parentElement = document.querySelector(".bookmarks__list");
     _message = "No bookmarks yet. Find one and bookmark it.";
+    getHandler(handler) {
+        window.addEventListener("load", handler);
+    }
     _getMarkup() {
         return this._data.map((bookmark)=>(0, _previewViewJsDefault.default).render(bookmark, false)).join("");
     }
