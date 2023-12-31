@@ -93,6 +93,10 @@ const controlAddRecipe = async function (newRecipe) {
     addRecipeView.getErrorMessage(err.message);
   }
 };
+
+const welcomemessage = () => {
+  console.log('Welcome Everyone!!');
+};
 const init = function () {
   bookmarksView.getHandler(controlBookmarks);
   recipeView.getHandler(controlRecipe);
@@ -101,5 +105,6 @@ const init = function () {
   searchView.getHandlerSearch(searchRecipe);
   paginationView._addHandlerClick(controlPagination);
   addRecipeView.getHandlerUpload(controlAddRecipe);
+  welcomemessage();
 };
 init();
