@@ -1,36 +1,36 @@
-import icons from 'url:../../img/icons.svg'
-import { Fraction } from 'fractional'
-import view from './view.js'
+import icons from 'url:../../img/icons.svg';
+import view from './view.js';
+import fracty from 'fracty';
 
 class recipeView extends view {
-  _parentElement = document.querySelector('.recipe')
+  _parentElement = document.querySelector('.recipe');
 
-  getHandler (handler) {
-    ;['hashchange', 'load'].forEach(ev => {
-      window.addEventListener(ev, handler)
-    })
+  getHandler(handler) {
+    ['hashchange', 'load'].forEach(ev => {
+      window.addEventListener(ev, handler);
+    });
   }
 
-  getHandlerUpdateServing (handler) {
+  getHandlerUpdateServing(handler) {
     this._parentElement.addEventListener('click', function (e) {
-      const btn = e.target.closest('.btn--tiny')
+      const btn = e.target.closest('.btn--tiny');
       //console.log(btn)
-      if (!btn) return
-      const updateTo = +btn.dataset.updateTo
+      if (!btn) return;
+      const updateTo = +btn.dataset.updateTo;
 
-      if (updateTo > 0) handler(updateTo)
-    })
+      if (updateTo > 0) handler(updateTo);
+    });
   }
 
-  getHandlerBookmark (handler) {
+  getHandlerBookmark(handler) {
     this._parentElement.addEventListener('click', function (e) {
-      const btn = e.target.closest('.btn--bookmark')
-      if (!btn) return
-      handler()
-    })
+      const btn = e.target.closest('.btn--bookmark');
+      if (!btn) return;
+      handler();
+    });
   }
 
-  _getMarkup () {
+  _getMarkup() {
     return `
     <figure class="recipe__fig">
           <img src="${this._data.image}" alt="${
@@ -78,8 +78,10 @@ class recipeView extends view {
             </div>
           </div>
 
-          <div class="recipe__user-generated">
-            
+          <div class="recipe__user-generated ${this._data.key ? '' : 'hidden'}">
+              <svg>
+                <use href="${icons}#icon-user"></use>
+              </svg>
           </div>
           <button class="btn--round btn--bookmark">
             <svg class="">
@@ -118,24 +120,24 @@ class recipeView extends view {
             </svg>
           </a>
         </div>
-    `
+    `;
   }
 
-  _getIngredient (ing) {
+  _getIngredient(ing) {
     return `
       <li class="recipe__ingredient">
        <svg class="recipe__icon">
          <use href="${icons}#icon-check"></use>
        </svg>
        <div class="recipe__quantity">${
-         ing.quantity ? new Fraction(ing.quantity).toString() : ''
+         ing.quantity ? fracty(ing.quantity).toString() : ''
        }</div>
        <div class="recipe__description">
          <span class="recipe__unit">${ing.unit}</span>
         ${ing.description}
       </div>
-    </li>`
+    </li>`;
   }
 }
 
-export default new recipeView()
+export default new recipeView();

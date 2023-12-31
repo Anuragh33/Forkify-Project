@@ -1,11 +1,11 @@
-import view from './view.js'
-import icons from 'url:../../img/icons.svg'
+import view from './view.js';
+import icons from 'url:../../img/icons.svg';
 
 class previewView extends view {
-  _parentElement = ''
+  _parentElement = '';
 
-  _getMarkup (results) {
-    const id = window.location.hash.slice(1)
+  _getMarkup(results) {
+    const id = window.location.hash.slice(1);
     return `
         <li class="preview">
         <a class="preview__link ${
@@ -17,13 +17,19 @@ class previewView extends view {
         <div class="preview__data">
             <h4 class="preview__title">${this._data.title}</h4>
             <p class="preview__publisher">${this._data.publisher}</p>
-            
+            <div class="preview__user-generated ${
+              this._data.key ? '' : 'hidden'
+            }">
+              <svg>
+                <use href="${icons}#icon-user"></use>
+              </svg>
+          </div>
             </div>
-        </div>
+        
         </a>
     </li>
-`
+`;
   }
 }
 
-export default new previewView()
+export default new previewView();
